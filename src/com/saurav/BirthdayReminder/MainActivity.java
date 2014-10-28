@@ -41,8 +41,8 @@ public class MainActivity extends Activity {
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		calendar.set(Calendar.HOUR_OF_DAY, 10);
-		calendar.set(Calendar.MINUTE, 0 );
-		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MINUTE, 36 );
+		calendar.set(Calendar.SECOND, 40);
 		Log.d("Saurav","Alarm triggering time is:"+Calendar.HOUR_OF_DAY+":"+Calendar.MINUTE);
 
 		

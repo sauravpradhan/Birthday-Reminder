@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -38,9 +39,14 @@ public class SmsActivity extends Activity{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				String uri= "smsto:"+ phoneno.getText().toString();
-				Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(uri));
-				intent.putExtra("sms_body",smsedit.getText().toString());
-				startActivity(intent);
+				//Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(uri));
+				//intent.putExtra("sms_body",smsedit.getText().toString());
+				//startActivity(intent);
+				
+			
+				SmsManager smsManager = SmsManager.getDefault();
+				
+				smsManager.sendTextMessage(uri, null , smsedit.getText().toString(), null, null);
 				
 			}
 		});
