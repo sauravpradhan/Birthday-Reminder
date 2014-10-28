@@ -1,11 +1,11 @@
 package com.saurav.BirthdayReminder;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,13 +15,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Data;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.DateFormat;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class AlarmBroadcast extends BroadcastReceiver{
@@ -34,17 +35,29 @@ public class AlarmBroadcast extends BroadcastReceiver{
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		mycontext= context;
+		if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
+			/*{	
+
+			//Toast.makeText(mycontext, "Hey Boot Completed Received", Toast.LENGTH_LONG).show();
+			Log.d("Saurav", "bOOT bOOT bOOT ");
+
+		}
+		else
+		{*/
+			mycontext= context;
 		Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_LONG).show();
 		Log.d("Saurav", "Alarm Triggered");
 		try {
+			strtalarmservice();
 			fetchbirthday();
+			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
+
+	//}
 
 
 	public void fetchbirthday() throws ParseException
@@ -58,7 +71,7 @@ public class AlarmBroadcast extends BroadcastReceiver{
 				String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));		       
 				ContentResolver bd = mycontext.getContentResolver();
 
-				//quering for birthday using contact_id
+				//Querying for birthday using contact_id
 				Cursor bdc = bd.query(android.provider.ContactsContract.Data.CONTENT_URI,
 						new String[] { Event.DATA }, 
 						android.provider.ContactsContract.Data.CONTACT_ID+" = "+id+" AND "+Data.MIMETYPE+" = '"+Event.CONTENT_ITEM_TYPE+"' AND "+Event.TYPE+" = "+Event.TYPE_BIRTHDAY, 
@@ -92,7 +105,7 @@ public class AlarmBroadcast extends BroadcastReceiver{
 								bname.add(name);
 								bdate.add(birthday);
 								bphone.add(number);
-								//Toast.makeText(mycontext,"Name:"+name+" DOB:"+birthday+" Phone:"+number+"Today's Date is:"+formattedDate, Toast.LENGTH_LONG).show();
+								Toast.makeText(mycontext,"Name:"+name+" DOB:"+birthday+" Phone:"+number+"Today's Date is:"+formattedDate, Toast.LENGTH_LONG).show();
 								count++;
 							}
 							else 
@@ -132,6 +145,32 @@ public class AlarmBroadcast extends BroadcastReceiver{
 			n.defaults |= Notification.DEFAULT_ALL;
 			nm.notify(0, n);
 		}
+	}
+
+	public void strtalarmservice()
+	{
+		AlarmManager alarmMgr;
+		PendingIntent alarmIntent;
+
+
+
+
+		alarmMgr = (AlarmManager)mycontext.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(mycontext, AlarmBroadcast.class);
+		intent.setAction("BirthdayReminder");
+		alarmIntent = PendingIntent.getBroadcast(mycontext, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT
+				| PendingIntent.FLAG_ONE_SHOT);
+
+
+
+
+		//code for triggering alarm 
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.set(Calendar.HOUR_OF_DAY, 10);
+		calendar.set(Calendar.MINUTE, 00 );
+		calendar.set(Calendar.SECOND, 00);
+		Log.d("Saurav","Alarm triggering time is:"+Calendar.HOUR_OF_DAY+":"+Calendar.MINUTE);
 	}
 
 	public ArrayList<String> getList() {

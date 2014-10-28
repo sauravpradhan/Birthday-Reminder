@@ -15,12 +15,16 @@ import android.widget.Toast;
 public class NotificationHandler extends ListActivity {
 	public static int passing_pos;
 	protected void onCreate(Bundle savedInstanceState) {
-		setTitle("Following People Have Birthday Today");
+		setTitle("Born Today");
 		AlarmBroadcast arrayobj = new AlarmBroadcast();
 		ArrayList<String> passedbday = null;
 		passedbday = arrayobj.getList();
 
 		super.onCreate(savedInstanceState);
+		if(AlarmBroadcast.bname.equals(null))
+		{
+			AlarmBroadcast.bname.add("No Birthday Today!");
+		}
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.listnotification,AlarmBroadcast.bname));
 		//Toast.makeText(getApplicationContext(), "Toast from the Notification Handler", Toast.LENGTH_LONG).show();
 
@@ -33,7 +37,7 @@ public class NotificationHandler extends ListActivity {
 
 		builder
 		.setTitle("Birthday Reminder")
-		.setIcon(R.drawable.dialog_icon)
+		.setIcon(R.drawable.birthday)
 		.setMessage("Today is: "+AlarmBroadcast.bname.get(position)+"'s "+"birthday!\nHow would you like to wish?")
 		.setCancelable(false)
 		.setPositiveButton("Call", new DialogInterface.OnClickListener() 

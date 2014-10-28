@@ -48,6 +48,8 @@ public class SmsActivity extends Activity{
 				
 				smsManager.sendTextMessage(uri, null , smsedit.getText().toString(), null, null);
 				
+				finish();
+				
 			}
 		});
 	}
