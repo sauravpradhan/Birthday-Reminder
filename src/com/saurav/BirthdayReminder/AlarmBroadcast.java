@@ -26,7 +26,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class AlarmBroadcast extends BroadcastReceiver{
-	public Context mycontext;
+	//public Context mycontext;
 	public static ArrayList<String> bday = new ArrayList<String>();
 
 	public static ArrayList<String> bname = new ArrayList<String>();
@@ -36,6 +36,7 @@ public class AlarmBroadcast extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if(intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
+		{
 			/*{	
 
 			//Toast.makeText(mycontext, "Hey Boot Completed Received", Toast.LENGTH_LONG).show();
@@ -44,16 +45,26 @@ public class AlarmBroadcast extends BroadcastReceiver{
 		}
 		else
 		{*/
-			mycontext= context;
-		Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_LONG).show();
-		Log.d("Saurav", "Alarm Triggered");
-		try {
-			strtalarmservice();
-			fetchbirthday();
-			
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//mycontext= context;
+			Toast.makeText(context, "Alarm Triggered", Toast.LENGTH_LONG).show();
+			Log.d("Saurav", "Alarm Triggered");
+			try {
+				strtalarmservice();
+				//fetchbirthday();
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if(intent.getAction().equalsIgnoreCase("BirthdayReminder"))
+		{
+			try {
+				fetchbirthday();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -62,14 +73,14 @@ public class AlarmBroadcast extends BroadcastReceiver{
 
 	public void fetchbirthday() throws ParseException
 	{
-		ContentResolver cr = mycontext.getContentResolver();
+		ContentResolver cr = MainActivity.mycontext.getContentResolver();
 		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
 		if (cur.getCount() > 0) {
 			while (cur.moveToNext()) {
 				String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
 				String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));		       
-				ContentResolver bd = mycontext.getContentResolver();
+				ContentResolver bd = MainActivity.mycontext.getContentResolver();
 
 				//Querying for birthday using contact_id
 				Cursor bdc = bd.query(android.provider.ContactsContract.Data.CONTENT_URI,
@@ -98,6 +109,7 @@ public class AlarmBroadcast extends BroadcastReceiver{
 						//while(count != bdc.getCount())
 						//if(name.equals("Saurav Pradhan"))
 						{ 
+							//need to change code for comparing only date, now it compares the whole date
 							if(formattedDate.equals(birthday))
 							{
 								//converting string to date
@@ -105,12 +117,13 @@ public class AlarmBroadcast extends BroadcastReceiver{
 								bname.add(name);
 								bdate.add(birthday);
 								bphone.add(number);
-								Toast.makeText(mycontext,"Name:"+name+" DOB:"+birthday+" Phone:"+number+"Today's Date is:"+formattedDate, Toast.LENGTH_LONG).show();
+								Toast.makeText(MainActivity.mycontext,"Name:"+name+" DOB:"+birthday+" Phone:"+number+"Today's Date is:"+formattedDate, Toast.LENGTH_LONG).show();
 								count++;
 							}
 							else 
 							{
 								//Toast.makeText(mycontext, "No birthdays found today so closing the app!", Toast.LENGTH_LONG).show();
+								bday.add("No Birthdays Today");
 							}
 
 
@@ -122,16 +135,16 @@ public class AlarmBroadcast extends BroadcastReceiver{
 
 			//code to generate notification
 
-			Intent notificationIntent = new Intent(mycontext, NotificationHandler.class);
-			PendingIntent contentIntent = PendingIntent.getActivity(mycontext,
+			Intent notificationIntent = new Intent(MainActivity.mycontext, NotificationHandler.class);
+			PendingIntent contentIntent = PendingIntent.getActivity(MainActivity.mycontext,
 					0, notificationIntent,
 					0);
 
-			NotificationManager nm = (NotificationManager) mycontext
+			NotificationManager nm = (NotificationManager) MainActivity.mycontext
 					.getSystemService(Context.NOTIFICATION_SERVICE);
 
-			Resources res = mycontext.getResources();
-			NotificationCompat.Builder builder = new NotificationCompat.Builder(mycontext);
+			Resources res = MainActivity.mycontext.getResources();
+			NotificationCompat.Builder builder = new NotificationCompat.Builder(MainActivity.mycontext);
 			builder.setContentIntent(contentIntent)
 			.setSmallIcon(R.drawable.notification)
 			//.setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.notification))
@@ -155,10 +168,10 @@ public class AlarmBroadcast extends BroadcastReceiver{
 
 
 
-		alarmMgr = (AlarmManager)mycontext.getSystemService(Context.ALARM_SERVICE);
-		Intent intent = new Intent(mycontext, AlarmBroadcast.class);
+		alarmMgr = (AlarmManager)MainActivity.mycontext.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(MainActivity.mycontext, AlarmBroadcast.class);
 		intent.setAction("BirthdayReminder");
-		alarmIntent = PendingIntent.getBroadcast(mycontext, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT
+		alarmIntent = PendingIntent.getBroadcast(MainActivity.mycontext, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT
 				| PendingIntent.FLAG_ONE_SHOT);
 
 

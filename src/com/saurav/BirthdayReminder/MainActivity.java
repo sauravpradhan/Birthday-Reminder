@@ -21,11 +21,13 @@ public class MainActivity extends Activity {
 	private AlarmManager alarmMgr;
 	private PendingIntent alarmIntent;
 	
+	public static Context mycontext = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		mycontext = getApplicationContext();
 		Button button1 = (Button)findViewById(R.id.button1);
 		Button button2 = (Button)findViewById(R.id.button2);
 		alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
@@ -40,9 +42,9 @@ public class MainActivity extends Activity {
 		//code for triggering alarm 
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
-		calendar.set(Calendar.HOUR_OF_DAY, 41);
-		calendar.set(Calendar.MINUTE, 38 );
-		calendar.set(Calendar.SECOND, 30);
+		calendar.set(Calendar.HOUR_OF_DAY,16);
+		calendar.set(Calendar.MINUTE, 01 );
+		calendar.set(Calendar.SECOND, 10);
 		Log.d("Saurav","Alarm triggering time is:"+Calendar.HOUR_OF_DAY+":"+Calendar.MINUTE);
 
 		

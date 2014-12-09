@@ -47,9 +47,6 @@ public class NotificationHandler extends ListActivity {
 				
 				Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", AlarmBroadcast.bphone.get(position), null));
 				startActivity(intent);
-
-
-
 			}
 		});
 		builder.setNeutralButton("Sms",
